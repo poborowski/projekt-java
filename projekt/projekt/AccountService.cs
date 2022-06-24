@@ -34,7 +34,7 @@ namespace projekt.Controllers
                 throw new BadRequestException("Invalid username or password");
             }
          
-            if (!(user.Password == dto.Password))
+            if (!(user.PasswordHash == dto.Password))
             {
                 throw new BadRequestException("Invalid username or password");
             }
@@ -53,11 +53,11 @@ namespace projekt.Controllers
                 Email = dto.Email,
                 Name = dto.Name,
                 LastName = dto.LastName,
-                Password = dto.Password,
+                PasswordHash = dto.Password,
          
 
     };
-            user.Password = dto.Password;
+            user.PasswordHash = dto.Password;
             _context.Users.Add(user);
             _context.SaveChanges();
         }

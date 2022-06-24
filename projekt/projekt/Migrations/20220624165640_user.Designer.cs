@@ -12,8 +12,8 @@ using projekt.Entity;
 namespace projekt.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20220621163647_init1")]
-    partial class init1
+    [Migration("20220624165640_user")]
+    partial class user
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,36 @@ namespace projekt.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsId", "BooksId");
+
+                    b.HasIndex("BooksId");
+
+                    b.ToTable("AuthorBook");
+                });
+
+            modelBuilder.Entity("BookCategory", b =>
+                {
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BooksId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("BookCategory");
+                });
 
             modelBuilder.Entity("projekt.Entity.Author", b =>
                 {
@@ -69,25 +99,6 @@ namespace projekt.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("projekt.Entity.BookAuthor", b =>
-                {
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BookId", "AuthorId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("BookAuthor");
-                });
-
             modelBuilder.Entity("projekt.Entity.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -109,19 +120,21 @@ namespace projekt.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("projekt.Entity.CategoryBook", b =>
+            modelBuilder.Entity("projekt.Entity.Role", b =>
                 {
-                    b.Property<int>("BookId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.HasKey("BookId", "CategoryId");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("CategoryId");
+                    b.HasKey("Id");
 
-                    b.ToTable("CategoryBook");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("projekt.Entity.User", b =>
@@ -147,68 +160,59 @@ namespace projekt.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("projekt.Entity.BookAuthor", b =>
+            modelBuilder.Entity("AuthorBook", b =>
                 {
-                    b.HasOne("projekt.Entity.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId")
+                    b.HasOne("projekt.Entity.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("projekt.Entity.Book", "Book")
-                        .WithMany("Authors")
-                        .HasForeignKey("BookId")
+                    b.HasOne("projekt.Entity.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("projekt.Entity.CategoryBook", b =>
+            modelBuilder.Entity("BookCategory", b =>
                 {
-                    b.HasOne("projekt.Entity.Book", "Book")
-                        .WithMany("CategoryBook")
-                        .HasForeignKey("BookId")
+                    b.HasOne("projekt.Entity.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("projekt.Entity.Category", "Category")
-                        .WithMany("Books")
+                    b.HasOne("projekt.Entity.Category", null)
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("projekt.Entity.Author", b =>
+            modelBuilder.Entity("projekt.Entity.User", b =>
                 {
-                    b.Navigation("Books");
-                });
+                    b.HasOne("projekt.Entity.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("projekt.Entity.Book", b =>
-                {
-                    b.Navigation("Authors");
-
-                    b.Navigation("CategoryBook");
-                });
-
-            modelBuilder.Entity("projekt.Entity.Category", b =>
-                {
-                    b.Navigation("Books");
+                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

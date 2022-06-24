@@ -4,7 +4,7 @@
 
 namespace projekt.Migrations
 {
-    public partial class init21 : Migration
+    public partial class user2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

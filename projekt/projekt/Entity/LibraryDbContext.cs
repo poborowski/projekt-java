@@ -10,6 +10,8 @@ public class LibraryDbContext:DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Category> Categories { get; set; }
 
+    public DbSet<Role> Roles { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,6 +21,9 @@ public class LibraryDbContext:DbContext
         modelBuilder.Entity<Author>().Property(P => P.Name).IsRequired();
         modelBuilder.Entity<Category>().Property(P => P.Name).IsRequired();
 
+
+        modelBuilder.Entity<User>().Property(u => u.Email).IsRequired();
+        modelBuilder.Entity<Role>().Property(u => u.Name).IsRequired();
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

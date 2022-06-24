@@ -13,7 +13,13 @@ namespace projekt
         {
             if (_context.Database.CanConnect())
             {
+                if (!_context.Roles.Any())
+                {
+                    var roles = GetRoles();
+                    _context.Roles.AddRange(roles);
+                    _context.SaveChanges();
 
+                }
                 if (!_context.Books.Any())
                 {
                     var Books = GetBooks();
@@ -34,7 +40,24 @@ namespace projekt
                 }
 
             }
-        }
+        } 
+        private IEnumerable<Role> GetRoles()
+        {
+            new Role()
+            {
+                Name = "User"
+            },
+            new Role()
+            {
+                Name = "Bibliotekarz"
+            },
+            new Role()
+            {
+                Name = "Admin"
+            },
+        };
+
+
         private Category Category()
         {
             var category = new Category()
