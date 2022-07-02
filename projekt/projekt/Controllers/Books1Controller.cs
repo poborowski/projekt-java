@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using projekt.Entity;
 
 namespace projekt.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class Books1Controller : ControllerBase
@@ -56,6 +58,7 @@ namespace projekt.Controllers
         // PUT: api/Books1/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Bibliotekarz, Admin")]
         public async Task<IActionResult> PutBook(int id, UpdateBookDto book)
         {
             var mapped= _mapper.Map<Book>(book);
@@ -88,6 +91,7 @@ namespace projekt.Controllers
         // POST: api/Books1
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Bibliotekarz, Admin")]
         public async Task<ActionResult<Book>> PostBook(BookDto book)
         {
           if (_context.Books == null)
@@ -104,6 +108,7 @@ namespace projekt.Controllers
 
         // DELETE: api/Books1/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Bibliotekarz, Admin")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             if (_context.Books == null)

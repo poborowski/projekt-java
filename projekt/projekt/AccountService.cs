@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Claims;
 using Microsoft.IdentityModel.SecurityTokenService;
 using Microsoft.IdentityModel.Tokens;
 using projekt.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Security.Claims;
 
 namespace projekt.Controllers
 {
@@ -28,7 +28,7 @@ namespace projekt.Controllers
 
         public string GenerateJwt(LoginUserDto dto)
         {
-            var user = _context.Users.FirstOrDefault(x => x.Email == dto.Email);
+            var user = _context.Users.Include(x => x.Role).FirstOrDefault(x => x.Email == dto.Email);
             if (user is null)
             {
                 throw new BadRequestException("Invalid username or password");
@@ -38,11 +38,19 @@ namespace projekt.Controllers
             {
                 throw new BadRequestException("Invalid username or password");
             }
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new Claim(ClaimTypes.Name,$"{user.Name} {user.LastName}".ToString()),
+                new Claim(ClaimTypes.Role,$"{user.Role.Name}"),
+                
 
+
+            };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(_settings.JwtExpireDays);
-            var token = new JwtSecurityToken(_settings.JwtIssuer, _settings.JwtIssuer, expires: expires, signingCredentials: cred);
+            var token = new JwtSecurityToken(_settings.JwtIssuer, _settings.JwtIssuer,claims, expires: expires, signingCredentials: cred);
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
         }
