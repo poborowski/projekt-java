@@ -33,12 +33,12 @@ namespace projekt.Controllers
             {
                 throw new BadRequestException("Invalid username or password");
             }
-         
-            if (!(user.PasswordHash == dto.Password))
+            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
+            if (result == PasswordVerificationResult.Failed)
             {
                 throw new BadRequestException("Invalid username or password");
             }
-    
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(_settings.JwtExpireDays);
@@ -54,12 +54,13 @@ namespace projekt.Controllers
                 Name = dto.Name,
                 LastName = dto.LastName,
                 PasswordHash = dto.Password,
-         
+                RoleId = dto.RoleId,
 
-    };
-            user.PasswordHash = dto.Password;
+            };
+            user.PasswordHash = _hasher.HashPassword(user, dto.Password);
             _context.Users.Add(user);
             _context.SaveChanges();
+
         }
 
     }

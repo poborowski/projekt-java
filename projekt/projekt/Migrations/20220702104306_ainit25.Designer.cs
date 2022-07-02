@@ -12,8 +12,8 @@ using projekt.Entity;
 namespace projekt.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20220624165910_user2")]
-    partial class user2
+    [Migration("20220702104306_ainit25")]
+    partial class ainit25
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -148,9 +148,6 @@ namespace projekt.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

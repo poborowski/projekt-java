@@ -40,23 +40,26 @@ namespace projekt
                 }
 
             }
-        } 
+        }
         private IEnumerable<Role> GetRoles()
         {
+            var roles = new List<Role>()
+            {
+                new Role()
+                {
+                    Name = "User",
+                },
             new Role()
             {
-                Name = "User"
+                Name = "Bibliotekarz",
             },
             new Role()
             {
-                Name = "Bibliotekarz"
-            },
-            new Role()
-            {
-                Name = "Admin"
-            },
-        };
-
+                Name = "Admin",
+            }
+            };
+        return roles;
+        }
 
         private Category Category()
         {

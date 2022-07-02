@@ -24,6 +24,7 @@ public class LibraryDbContext:DbContext
 
         modelBuilder.Entity<User>().Property(u => u.Email).IsRequired();
         modelBuilder.Entity<Role>().Property(u => u.Name).IsRequired();
+      
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

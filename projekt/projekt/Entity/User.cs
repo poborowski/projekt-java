@@ -10,7 +10,6 @@
 
         public string PasswordHash  { get; set; }
 
-        public bool IsAdmin { get; set; } = false;
         public int RoleId   { get; set; }
 
         public virtual Role Role { get; set; }
